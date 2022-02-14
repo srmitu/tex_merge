@@ -1,0 +1,44 @@
+\documentclass[12pt]{jarticle}
+%
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{amssymb, amsmath}
+\usepackage{url}
+\usepackage{cite}
+\makeatletter
+\let\MYcaption\@makecaption
+\makeatother
+
+\usepackage{subcaption}
+\captionsetup{compatibility=false}
+
+\makeatletter
+\let\@makecaption\MYcaption
+\makeatother
+%
+
+\textheight = 212mm
+\textwidth = 160mm
+\oddsidemargin = -0.4mm
+
+\begin{document}
+
+% 子ファイルを呼び出すとき
+%\subfiles{subfiles/template/template.tex}
+
+% 参考文献を表示するとき
+%\bibliography{}
+
+\end{document}
+
+% section，section*ごとに改ページする
+%\setting{clearpage before section}
+%\setting{!clearpage before section*}
+
+% 、を，に　。を．にする
+%\setting{fix punctuation}
+%\setting{set comma} 
+%\setting{set kuten}
+
+% mergeした後にタイプセットして、pdfを表示する
+%\setting{generate pdf after typeset}
+%\setting{typeset after merge}
