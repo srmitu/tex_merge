@@ -46,10 +46,10 @@ class fixTex:
             pass
 
         # 、や， 。や．を整える
-        if self.c_dic['trim punctuation']:
-            trimer = punctuation.fixPunctuationJapan(self.c_dic["set comma"], self.c_dic["set period"])
-            self.lines = copy.deepcopy(trimer.trim(self.lines))
-            self.package = copy.deepcopy(trimer.trim(self.package))
+        if self.c_dic['fix punctuation']:
+            fixPunctuation = punctuation.fixPunctuationJapan(self.c_dic["set comma"], self.c_dic["set period"])
+            self.lines = copy.deepcopy(fixPunctuation.fix(self.lines))
+            self.package = copy.deepcopy(fixPunctuation.fix(self.package))
 
         # sectionなどの節目に改ページする(文書クラスの仕様は考慮していない)
         section_list = ['chapter', 'chapter*', 'section', 'section*', 'subsection', 'subsection*', 'subsubsection', 'subsubsection*'] 

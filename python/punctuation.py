@@ -5,7 +5,7 @@ class fixPunctuationJapan:
         self.use_comma = use_comma
         self.use_period = use_period
 
-    def trim(self, sentence: list):
+    def fix(self, sentence: list):
         for i, line in enumerate(sentence):
             if '、' or '，' in line:
                 if self.use_comma:
