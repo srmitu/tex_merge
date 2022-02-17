@@ -7,12 +7,12 @@
 ()内は現在のコミットでは存在しないが必要となるディレクトリである。
 ├─root.tex　// 親ファイル<br>
 ├─  subfiles　// 子ファイルを保存するディレクトリ<br>
-│     ├─  template<br>
-│     │     └─  template.tex<br>
-│     ├─  (hoge)<br>
-│     │     ├─  (hoge.tex)<br>
-│     │     └─  (hoge.bib)<br>
-│     │<br>
+│ ├─  template<br>
+│ │ └─  template.tex<br>
+│ ├─  (hoge)<br>
+│ │ ├─  (hoge.tex)<br>
+│ │ └─  (hoge.bib)<br>
+│ │<br>
 │<br>
 │<br>
 ├─  (pic) // 写真を保存するディレクトリ<br>
@@ -78,13 +78,14 @@
 \end{document}
 %\setting{typeset after merge} \settingコマンドは子ファイルでは使えない
 ```
-### bibファイル
-子ファイルごとに指定する。
 
 ### 写真について
 picというディレクトリを作成し、そこに保存して使用することを想定している。
-```
 
+### bibファイル
+子ファイルごとに指定する。
+
+```
 @Misc{
   hoge,
   title = "fuga"
