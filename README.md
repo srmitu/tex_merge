@@ -8,6 +8,7 @@
 ├─root.tex　// 親ファイル<br>
 ├─  subfiles　// 子ファイルを保存するディレクトリ<br>
 │ ├─  template<br>
+| | ├─  small_merge.py<br> // 小規模で子ファイルをマージする 
 │ │ └─  template.tex<br>
 │ ├─  (hoge)<br>
 │ │ ├─  (hoge.tex)<br>
@@ -79,6 +80,14 @@
 %\setting{typeset after merge} \settingコマンドは子ファイルでは使えない
 ```
 
+### small_merge.pyについて
+templateディレクトリにあるsmall_merge.pyは、おおよそmerge.pyと同様の処理を行う。
+違いとしては、親ファイルがroot.texによらないところ、及びプロジェクト内のディレクトリであればどこでも使用可能というところである。
+このプログラムは子ファイル内で`\subfile`コマンドを使用している場合を想定して製作した。
+ただし、以下の条件を守る必要がある。
+ - 親ファイルの名前は先頭に`root_`がつく必要がある。
+ - 親ファイルが存在するディレクトリにsmall_merge.pyを移動させ、使用する必要がある(プログラムごとコピペで可)
+
 ### 写真について
 picというディレクトリを作成し、そこに保存して使用することを想定している。
 
@@ -112,9 +121,8 @@ root.texに以下を指定する
 | ---- | ---- | ---- | ---- |
 |`typeset after merge`|マージした後にタイプセットする|〇||
 |`generate pdf after typeset`|タイプセットした後にpdfの生成をする(`typeset after merge`を指定する必要がある)|〇||
-|`display typeset log`|タイプセットの時に出てくる表示を表示する※(`typeset after merge`を指定する必要がある)|〇||
-|`display typeset small`|タイプセットの時に出てくる表示を最小限にする※(`typeset after merge`及び`display typeset log`を指定する必要がある)|〇||
-|`display typeset log small`|`display typeset log`と`display typeset small`を同時に指定する|〇||
+|`display typeset log small`|タイプセットの時に出てくる表示を最小限にする※(`typeset after merge`を指定する必要がある)|〇||
+|`display typeset small log`|`display typeset log small`と一緒|〇||
 |`print comment`|コメントアウト及びコメント環境内も表示する|〇||
 |`fix punctuation`|，や．を整える|〇||
 |`set comma`|`fix punctuation`を指定している場合、"、"を"，"に変換する|〇||
@@ -126,7 +134,7 @@ root.texに以下を指定する
 |`error when there is no reference`|`generate ref.csv`を指定していて、`\pageref`, `\ref`, `\cite`で参照元を見つけれない場合、typesetするのをやめる|〇||
 |`merged name: `|このキーワードの後に指定したファイル名でマージする(初期設定ではmerged)|×|\setting{merged name: merged}|
 
-※'typeset after merge'を指定したときに3回タイプセットするが、そのうち最初の2回のみに適応される
+※'typeset after merge'を指定したときに3回タイプセットするが、最後の一回のみにワーニングメッセージが出てくるようにして、それ以外のメッセージは一切出ないようにする。
 
 ## pdfファイルの生成(root.texで`\setting`コマンドを指定しない場合)
 ### Windows

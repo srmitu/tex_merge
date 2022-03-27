@@ -10,6 +10,10 @@ try:
     import for_creating_csv
 except:
     from python import for_creating_csv
+try:
+    import color_print
+except:
+    from python import color_print
 
 
 class fixTex:
@@ -19,22 +23,17 @@ class fixTex:
                         'clearpage before subsection': False, 'clearpage before subsubsection': False,
                         'clearpage before chapter*': False, 'clearpage before section*': False,
                         'clearpage before subsection*': False, 'clearpage before subsubsection*': False,
-                        'generate ref.csv': False, 'fix punctuation': False, 'merged name: ': "merged",
-                        'error when there is no reference': False, 'display typeset log': False,
-                        'display typeset small': False, 'generate pdf after typeset': False}
-        # 色
-        self.red = '\033[31m'
-        self.green = '\033[32m'
-        self.yellow = '\033[33m'
-        self.blue = '\033[34m'
-        self.end = '\033[0m'
-
+                        'generate ref.csv': False, 'fix punctuation': False, 'merged name: ': "thesis",
+                        'error when there is no reference': False, 'display typeset log small': False,
+                        'generate pdf after typeset': False}
         # \usepackage{}など，\begin{document}より前に書かれる内容のリスト
         self.package = list()
         # \begin{document} から \end{document}までの内容
         self.lines = list()
         # 参照元があるかのチェック用
         self.reference = True
+        # 色と共に出力できるクラスをインスタンス化
+        self.Color = color_print.ColorPrint()
     
     # 文書を校閲する
     def fixTex(self, lines: list, package: list):
@@ -47,9 +46,9 @@ class fixTex:
 
         # 、や， 。や．を整える
         if self.c_dic['fix punctuation']:
-            fixPunctuation = punctuation.fixPunctuationJapan(self.c_dic["set comma"], self.c_dic["set period"])
-            self.lines = copy.deepcopy(fixPunctuation.fix(self.lines))
-            self.package = copy.deepcopy(fixPunctuation.fix(self.package))
+            fix_punctuation = punctuation.fixPunctuationJapan(self.c_dic["set comma"], self.c_dic["set period"])
+            self.lines = copy.deepcopy(fix_punctuation.fix(self.lines))
+            self.package = copy.deepcopy(fix_punctuation.fix(self.package))
 
         # sectionなどの節目に改ページする(文書クラスの仕様は考慮していない)
         section_list = ['chapter', 'chapter*', 'section', 'section*', 'subsection', 'subsection*', 'subsubsection', 'subsubsection*'] 
@@ -67,7 +66,7 @@ class fixTex:
         if self.c_dic["generate ref.csv"]:
             LinesCommentOut = for_creating_csv.forCreatingCsv()
             comment_list = LinesCommentOut.detectLinesCommentOut(self.lines)
-            LinesCommentOut.generateRefCsv(self.lines, self.package, comment_list, self.file_name(), self.c_dic["error when there is no reference"])
+            self.reference = LinesCommentOut.generateRefCsv(self.lines, self.package, comment_list, self.file_name(), self.c_dic["error when there is no reference"])
 
         # コメントアウト(%から始まる行)を表示しない
         if not self.c_dic["print comment"]:
@@ -98,9 +97,8 @@ class fixTex:
             elif 'set kuten' in command:
                 self.c_dic['set period'] = False if command[0] != '!' else True
                 return_d = 0
-            elif 'display typeset log small' in command or 'display typeset small log' in command:
-                self.c_dic['display typeset log'] = True if command[0] != '!' else False
-                self.c_dic['display typeset small'] = True if command[0] != '!' else False
+            elif 'display typeset small log' in command:
+                self.c_dic['display typeset log small'] = True if command[0] != '!' else False
                 return_d = 0
             section_list = ['chapter', 'section', 'subsection', 'subsubsection'] 
             for section_name in section_list:
@@ -109,9 +107,9 @@ class fixTex:
                     self.c_dic['clearpage before ' + section_name + '*'] = True if command[0] != '!' else False
                     return_d = 0
             if return_d:
-                print(self.yellow + "undefined command: " + command + self.end)
+                self.Color.printYellow("undefined command: " + command)
                 return
-        print("enable setting: " + self.blue + command + self.end)
+        print("enable setting: " + self.Color.blue + command + self.Color.end)
     
     def file_name(self):
         return self.c_dic['merged name: ']
@@ -119,10 +117,8 @@ class fixTex:
         return self.c_dic['typeset after merge']
     def check_ref(self):
         return self.c_dic['error when there is no reference']
-    def display_typeset_log(self):
-        return self.c_dic['display typeset log']
     def display_typeset_small(self):
-        return self.c_dic['display typeset small']
+        return self.c_dic['display typeset log small']
     def generate_pdf(self):
         return self.c_dic['generate pdf after typeset']
 
