@@ -8,7 +8,7 @@
 ├─root.tex　// 親ファイル<br>
 ├─  subfiles　// 子ファイルを保存するディレクトリ<br>
 │ ├─  template<br>
-| | ├─  small_merge.py<br> // 小規模で子ファイルをマージする 
+│ │ ├─  small_merge.py // 小規模で子ファイルをマージする<br>
 │ │ └─  template.tex<br>
 │ ├─  (hoge)<br>
 │ │ ├─  (hoge.tex)<br>
