@@ -7,11 +7,14 @@
 *.fdb_latexmk
 *.fls
 *.log
-*.pdf
 *.out
 *.xcp
 *.gz
 *.toc
 *.lof
+*.pdf
+!/pic/*.pdf
+!/pdf/*.pdf
 merged*
 /__pycache__/
+python/__pycache__/
