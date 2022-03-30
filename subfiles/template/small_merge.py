@@ -12,7 +12,6 @@ sys.path.append('../../')
 from python import fix_tex
 from python import tex_reader
 from python import typeset
-from python import color_print
 import copy
 
 class smallMerger:
@@ -24,14 +23,18 @@ class smallMerger:
         self.set_pic_dir = set_pic_dir
         self.set_pdf_dir = set_pdf_dir
 
+        self.red = '\033[31m'
+        self.green = '\033[32m'
+        self.yellow = '\033[33m'
+        self.blue = '\033[34m'
+        self.end = '\033[0m'
+
         # \usepackage{}など，\begin{document}より前に書かれる内容のリスト
         self.package = list()
         # \begin{document} から \end{document}までの内容
         self.lines = list()
         # 各子ファイルが含まれるフォルダに存在する.bibファイルの絶対パス
         self.biblist = list()
-        # 色と共に出力できるクラスをインスタンス化
-        self.Color = color_print.ColorPrint()
     
     def start(self):
         fixTexC = fix_tex.fixTex()
@@ -52,16 +55,19 @@ class smallMerger:
         if fixTexC.typeset():
             if (not fixTexC.check_ref()) or (fixTexC.check_ref() and fixTexC.reference):
                 typesetC = typeset.typeset(fixTexC.file_name())
-                if not typesetC.typeset(fixTexC.display_typeset_log(), fixTexC.display_typeset_small(), False):
+                if fixTexC.generate_pdf():
+                    typesetC.task_list.append("ptex2pdf " + fixTexC.file_name() + ".tex")
+                    typesetC.bar=[40, 60]
+                if not typesetC.typeset(small_display=fixTexC.display_typeset_small()):
                     sys.exit()
                 if fixTexC.generate_pdf():
-                    if not typesetC.tex2pdf(True, False, fixTexC.generate_pdf()):
+                    if not typesetC.tex2pdf(small_display=fixTexC.display_typeset_small()):
                         sys.exit()
                 else:
-                    if not typesetC.typeset(True, False, True):
+                    if not typesetC.typeset(small_display=fixTexC.display_typeset_small()):
                         sys.exit()
             elif fixTexC.check_ref() and (not fixTexC.reference):
-                self.Color.printRed("参照元がないものが発見されたため、タイプセットを行いませんでした。")
+                print(self.red + "参照元がないものが発見されたため、タイプセットを行いませんでした。", self.end)
 
     def createTex(self, file_name):
         # 統合後のファイル(file_name).texを作成する.
@@ -87,16 +93,18 @@ class smallMerger:
                 print(e)
                 break
             else:
-                self.Color.printGreen(file_name + ".tex have generated")
+                print(self.green + file_name + ".tex have generated" + self.end)
                 break
         print("本文スタート:", len(self.package)+3, "全文:", len(self.lines) + len(self.package) + 5)
-        self.Color.printGreen('Finish!!!')
+        print(self.green + 'Finish!!!' + self.end)
 
    
             
 
 if __name__ == '__main__':
-    Color = color_print.ColorPrint()
+    red = '\033[31m'
+    yellow = '\033[33m'
+    end = '\033[0m'
     # picディレクトリ
     set_pic_dir_search = '**/pic/'
     pic_dir_nominatin = list()
@@ -106,9 +114,9 @@ if __name__ == '__main__':
         if pic_dir_nominatin:
             break
     if not pic_dir_nominatin:
-        Color.printYellow("picディレクトリを発見できません")
+        print(yellow + "picディレクトリを発見できません" + end)
     elif len(pic_dir_nominatin) > 1:
-        Color.printRed("picディレクトリが複数あります。")
+        print(red + "picディレクトリが複数あります。" + end)
         sys.exit()
     set_pic_dir = pic_dir_nominatin[0].replace("\\", "/").replace("//", "/") # 該当するものは一つのみ
     print(set_pic_dir)
@@ -122,9 +130,9 @@ if __name__ == '__main__':
         if pdf_dir_nominatin:
             break
     if not pdf_dir_nominatin:
-        Color.printYellow("pdfディレクトリを発見できません")
+        print(yellow + "pdfディレクトリを発見できません" + end)
     elif len(pdf_dir_nominatin) > 1:
-        Color.printRed("pdfディレクトリが複数あります。")
+        print(red + "pdfディレクトリが複数あります。" + end)
         sys.exit()
     set_pdf_dir = pdf_dir_nominatin[0].replace("\\", "/").replace("//", "/") # 該当するものは一つのみ
     print(set_pdf_dir)
@@ -132,10 +140,10 @@ if __name__ == '__main__':
     # 標準入力でroot.texの絶対パスをもらう
     root_nomination_files = glob.glob('root_?*.tex')
     if len(root_nomination_files) > 1:
-        Color.printRed("root_と先頭につくものは一つにしてください。")
+        print(red + "root_と先頭につくものは一つにしてください。" + end)
         sys.exit()
     elif len(root_nomination_files) == 0:
-        Color.printRed("root_と先頭につくものを用意してください。")
+        print(red + "root_と先頭につくものを用意してください。" + end)
         sys.exit()
     root_file = root_nomination_files[0] # 該当するものは一つのみ
     root_tex = os.path.join(os.getcwd(), root_file)
